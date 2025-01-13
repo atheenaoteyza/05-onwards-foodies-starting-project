@@ -1,18 +1,24 @@
 import Link from "next/link";
 import classes from "./page.module.css";
-import burger from "@/assets/burger.jpg";
 import curry from "@/assets/curry.jpg";
-import dumplings from "@/assets/dumplings.jpg";
-import macncheese from "@/assets/macncheese.jpg";
-import pizza from "@/assets/pizza.jpg";
-import schnitzel from "@/assets/schnitzel.jpg";
-import tomato from "@/assets/tomato-salad.jpg";
-
+import slideshow from "@/public/component/images/image.slideshow.module.css";
+import ImageSlider from "@/public/component/images/image-slideshow";
 export default function Home() {
   return (
     <>
       <header className={classes.header}>
-        <div className={classes.slideshow}></div>
+        <div className={classes.slideshow}>
+          <div className={slideshow.slideshow}>
+            <ImageSlider></ImageSlider>
+            {/* <Image
+              src={curry}
+              alt="A delicious curry"
+              className={slideshow.active}
+              style={{ objectFit: "cover" }}
+            /> */}
+          </div>
+        </div>
+
         <div>
           <div className={classes.hero}>
             <h1>NextLevel Food for NextLevel Foodies</h1>
