@@ -3,6 +3,7 @@ import classes from "./page.module.css";
 import curry from "@/assets/curry.jpg";
 import slideshow from "@/public/component/images/image.slideshow.module.css";
 import ImageSlider from "@/public/component/images/image-slideshow";
+
 export default function Home() {
   return (
     <>
