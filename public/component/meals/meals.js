@@ -9,13 +9,16 @@ export async function getMeals() {
   try {
     // Fetch meals from the database
     const meals = db.prepare("SELECT * FROM meals").all();
-
     // Debugging
-    console.log("Meals fetched:", meals);
+    console.log("Meals fetched successfully");
 
     return meals;
   } catch (error) {
     console.error("Error fetching meals:", error);
     throw new Error("Failed to fetch meals.");
   }
+}
+
+export function getMealBySlug(slug) {
+  return db.prepare("SELECT * FROM meals WHERE slug = ?").get(slug);
 }
