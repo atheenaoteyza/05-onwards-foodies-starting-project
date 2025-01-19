@@ -1,11 +1,21 @@
 "use client";
 import classes from "./image-picker.module.css";
-import { useRef } from "react";
+import { useRef, useState } from "react";
+import Image from "next/image";
 export default function ImagePicker({ label }) {
   const imageInput = useRef();
+  const [image, setImage] = useState(null);
+
   const handleImagePicker = () => {
     imageInput.current.click();
   };
+
+  const handleImageChange = (e) => {
+    if (e.target.files.length > 0) {
+      setImage(URL.createObjectURL(e.target.files[0]));
+    }
+  };
+
   return (
     <div className={classes.picker}>
       <label htmlFor={label}>{label}</label>
@@ -14,15 +24,19 @@ export default function ImagePicker({ label }) {
           className={classes.input}
           type="file"
           id={label}
-          accept="image/jpg image/png"
+          accept="image/jpeg, image/png"
           ref={imageInput}
+          onChange={handleImageChange}
         />
-      </div>
-      <p>
-        <button type="submit" onClick={handleImagePicker}>
+
+        <div className={classes.preview}>
+          {image && <Image src={image} alt="Selected image" fill />}
+          {!image && <p>No image picked yet.</p>}
+        </div>
+        <button type="button" onClick={handleImagePicker}>
           Pick an Image
         </button>
-      </p>
+      </div>
     </div>
   );
 }
