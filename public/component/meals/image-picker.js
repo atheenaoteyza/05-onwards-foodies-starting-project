@@ -2,6 +2,7 @@
 import classes from "./image-picker.module.css";
 import { useRef, useState } from "react";
 import Image from "next/image";
+
 export default function ImagePicker({ label }) {
   const imageInput = useRef();
   const [image, setImage] = useState(null);
@@ -11,8 +12,15 @@ export default function ImagePicker({ label }) {
   };
 
   const handleImageChange = (e) => {
-    if (e.target.files.length > 0) {
-      setImage(URL.createObjectURL(e.target.files[0]));
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onload = (event) => {
+        setImage(event.target.result); // Base64 string
+      };
+
+      reader.readAsDataURL(file); // Convert to Base64
     }
   };
 
@@ -30,9 +38,13 @@ export default function ImagePicker({ label }) {
         />
 
         <div className={classes.preview}>
-          {image && <Image src={image} alt="Selected image" fill />}
-          {!image && <p>No image picked yet.</p>}
+          {image ? (
+            <Image src={image} alt="Selected image" width={200} height={200} />
+          ) : (
+            <p>No image picked yet.</p>
+          )}
         </div>
+
         <button type="button" onClick={handleImagePicker}>
           Pick an Image
         </button>
