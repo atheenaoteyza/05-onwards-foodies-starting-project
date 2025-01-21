@@ -4,6 +4,10 @@ import { redirect } from "next/navigation";
 export async function shareMeal(formData) {
   "use server";
 
+  function isInvalid(text) {
+    return !text || text.trim() === "";
+  }
+
   const meal = {
     title: formData.get("title"),
     summary: formData.get("summary"),
@@ -12,6 +16,13 @@ export async function shareMeal(formData) {
     creator: formData.get("name"),
     creator_email: formData.get("email"),
   };
+
+  if (
+    isInvalid(meal.title) ||
+    isInvalid(meal.summary) // all inputs must be validated
+  ) {
+    throw new Error("Invalid input .....");
+  }
   await saveMeal(meal);
   redirect("/meals");
 }
