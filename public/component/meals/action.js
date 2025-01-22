@@ -19,9 +19,15 @@ export async function shareMeal(formData) {
 
   if (
     isInvalid(meal.title) ||
-    isInvalid(meal.summary) // all inputs must be validated
+    isInvalid(meal.summary) ||
+    isInvalid(meal.instructions) ||
+    isInvalid(meal.creator) ||
+    isInvalid(meal.creator_email) ||
+    !meal.creator_email.includes("@") ||
+    !meal.image ||
+    meal.image.size === 0
   ) {
-    throw new Error("Invalid input .....");
+    throw new Error("Invalid input: All fields are required. ");
   }
   await saveMeal(meal);
   redirect("/meals");
