@@ -1,9 +1,10 @@
+"use server";
+
+import { revalidatePath } from "next/cache";
 import { saveMeal } from "./meals";
 import { redirect } from "next/navigation";
 
-export async function shareMeal(formData) {
-  "use server";
-
+export async function shareMeal(prevState, formData) {
   function isInvalid(text) {
     return !text || text.trim() === "";
   }
@@ -27,8 +28,12 @@ export async function shareMeal(formData) {
     !meal.image ||
     meal.image.size === 0
   ) {
-    throw new Error("Invalid input: All fields are required. ");
+    return {
+      message: "Input is invalid. All input fields are required",
+    };
   }
   await saveMeal(meal);
+  revalidatePath("/meals");
+  await new Promise((resolve) => setTimeout(resolve, 100)); // Wait briefly before redirecting
   redirect("/meals");
 }

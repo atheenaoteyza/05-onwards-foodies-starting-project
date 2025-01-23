@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { getMealBySlug } from "@/public/component/meals/meals";
+import { getMealBySlug } from "@/app/lib/meals";
 import classes from "./page.module.css";
 import Image from "next/image";
 import { notFound } from "next/navigation";
