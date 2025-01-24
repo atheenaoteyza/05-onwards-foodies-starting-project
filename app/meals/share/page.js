@@ -7,6 +7,7 @@ import { useFormState } from "react-dom";
 
 export default function ShareMealPage() {
   const [state, formAction] = useFormState(shareMeal, { message: null });
+
   return (
     <>
       <header className={classes.header}>
@@ -15,9 +16,10 @@ export default function ShareMealPage() {
         </h1>
         <p>Or any other meal you feel needs sharing!</p>
       </header>
-      <main className={classes.main}>
+
+      <section className={classes.main}>
         <form className={classes.form} action={formAction}>
-          <div className={classes.row}>
+          <fieldset className={classes.row}>
             <p>
               <label htmlFor="name">Your name</label>
               <input type="text" id="name" name="name" required />
@@ -26,15 +28,18 @@ export default function ShareMealPage() {
               <label htmlFor="email">Your email</label>
               <input type="email" id="email" name="email" required />
             </p>
-          </div>
+          </fieldset>
+
           <p>
             <label htmlFor="title">Title</label>
             <input type="text" id="title" name="title" required />
           </p>
+
           <p>
             <label htmlFor="summary">Short Summary</label>
             <input type="text" id="summary" name="summary" required />
           </p>
+
           <p>
             <label htmlFor="instructions">Instructions</label>
             <textarea
@@ -44,15 +49,18 @@ export default function ShareMealPage() {
               required
             ></textarea>
           </p>
-          <div>
-            <ImagePicker label="Your image" name="image"></ImagePicker>
+
+          <div className={classes.imagePicker}>
+            <ImagePicker label="Your image" name="image" />
           </div>
+
           <p className={classes.actions}>
-            <MealsFormSubmit></MealsFormSubmit>
-            {state.message && <p>{state.message}</p>}
+            <MealsFormSubmit />
           </p>
+
+          {state.message && <p className={classes.error}>{state.message}</p>}
         </form>
-      </main>
+      </section>
     </>
   );
 }
