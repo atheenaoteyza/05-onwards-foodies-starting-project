@@ -1,15 +1,8 @@
-import { useState } from "react";
-import Image from "next/image";
-import classes from "./meal-item.module.css";
 import Link from "next/link";
+import classes from "./meal-item.module.css";
+import Image from "next/image";
 
 export default function MealItem({ title, slug, image, summary, creator }) {
-  const [isImageLoaded, setIsImageLoaded] = useState(false);
-
-  const handleImageLoad = () => {
-    setIsImageLoaded(true);
-  };
-
   return (
     <>
       <article className={classes.meal}>
@@ -20,8 +13,7 @@ export default function MealItem({ title, slug, image, summary, creator }) {
               alt={title}
               fill
               className={classes.image}
-              onLoadingComplete={handleImageLoad} // use onLoadingComplete for Next.js Image component
-            />
+            ></Image>
           </div>
           <div className={classes.headerText}>
             <h2>{title}</h2>
@@ -34,8 +26,6 @@ export default function MealItem({ title, slug, image, summary, creator }) {
             <Link href={`/meals/${slug}`}>View Details</Link>
           </div>
         </div>
-        {!isImageLoaded && <p>Loading image...</p>}{" "}
-        {/* Show loading message while image is loading */}
       </article>
     </>
   );
