@@ -1,28 +1,25 @@
+import { S3 } from "@aws-sdk/client-s3";
 import sql from "better-sqlite3";
 import slugify from "slugify";
 import xss from "xss";
-import fs from "node:fs";
+
+const s3 = new S3({
+  region: "ap-southeast-2", // Updated region
+  // Optionally set credentials if necessary
+  // credentials: {
+  //   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  //   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  // },
+});
 
 const db = sql("meals.db");
 
 export async function getMeals() {
-  // Simulate a delay
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-
-  try {
-    // Fetch meals from the database
-    const meals = db.prepare("SELECT * FROM meals").all();
-    // Debugging
-    console.log("Meals fetched successfully");
-
-    return meals;
-  } catch (error) {
-    console.error("Error fetching meals:", error);
-    throw new Error("Failed to fetch meals.");
-  }
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+  return db.prepare("SELECT * FROM meals").all();
 }
 
-export function getMealBySlug(slug) {
+export function getMeaBySlug(slug) {
   return db.prepare("SELECT * FROM meals WHERE slug = ?").get(slug);
 }
 
@@ -33,30 +30,37 @@ export async function saveMeal(meal) {
   const extension = meal.image.name.split(".").pop();
   const fileName = `${meal.slug}.${extension}`;
 
-  const stream = fs.createWriteStream(`public/images/${fileName}`);
   const bufferedImage = await meal.image.arrayBuffer();
 
-  stream.write(Buffer.from(bufferedImage), (error) => {
-    if (error) {
-      throw new Error("Saving image failed!");
-    }
-  });
+  try {
+    // Upload image to S3
+    await s3.putObject({
+      Bucket: "louiseoteyzabucket",
+      Key: fileName,
+      Body: Buffer.from(bufferedImage),
+      ContentType: meal.image.type,
+    });
 
-  meal.image = `/images/${fileName}`;
+    meal.image = fileName;
 
-  db.prepare(
+    // Save meal information to the database
+    db.prepare(
+      `
+      INSERT INTO meals
+        (title, summary, instructions, creator, creator_email, image, slug)
+      VALUES (
+        @title,
+        @summary,
+        @instructions,
+        @creator,
+        @creator_email,
+        @image,
+        @slug
+      )
     `
-    INSERT INTO meals
-      (title, summary, instructions, creator, creator_email, image, slug)
-    VALUES (
-      @title,
-      @summary,
-      @instructions,
-      @creator,
-      @creator_email,        
-      @image,
-      @slug
-    )
-    `
-  ).run(meal);
+    ).run(meal);
+  } catch (error) {
+    console.error("Error saving meal:", error);
+    throw new Error("Failed to upload image or save meal.");
+  }
 }

@@ -1,10 +1,10 @@
 import Link from "next/link";
-import { getMealBySlug } from "@/app/lib/meals";
 import classes from "./page.module.css";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { getMeaBySlug } from "@/app/lib/meals";
 export default function MealDetailsPage({ params }) {
-  const meal = getMealBySlug(params.slug);
+  const meal = getMeaBySlug(params.slug);
 
   if (!meal) {
     notFound();
@@ -16,7 +16,10 @@ export default function MealDetailsPage({ params }) {
     <>
       <header className={classes.header}>
         <div className={classes.image}>
-          <Image src={meal.image} fill></Image>
+          <Image
+            src={`https://louiseoteyzabucket.s3.ap-southeast-2.amazonaws.com/${meal.image}`}
+            fill
+          ></Image>
         </div>
         <div className={classes.headerText}>
           <h1>{meal.title}</h1>
